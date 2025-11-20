@@ -28,17 +28,18 @@ CREATE TABLE Properties (
     property_id INT PRIMARY KEY AUTO_INCREMENT,
     agent_id INT,
     title VARCHAR(150) NOT NULL,
-    type ENUM('Buy', 'Rent', 'Sell') NOT NULL,
+    type ENUM('For_Sale','For_Rent') NOT NULL,
     price DECIMAL(12,2) NOT NULL,
     location VARCHAR(255),
     building_age INT,
-    status ENUM('Available', 'Booked', 'Sold', 'Rented') NOT NULL,
+    status ENUM('Available', 'Sold', 'Rented') NOT NULL,
     FOREIGN KEY (agent_id) REFERENCES Users(user_id)
 );
-
 INSERT INTO Properties (agent_id, title, type, price, location, building_age, status) VALUES
-(2, '2BHK Apartment in City Center', 'Sell', 4500000, 'Bangalore', 5, 'Available'),
-(2, 'Luxury Villa with Garden', 'Rent', 75000, 'Hyderabad', 2, 'Booked');
+(2, '2BHK Apartment in City Center', 'For_Sale', 4500000, 'Bangalore', 5, 'Available'),
+(2, 'Luxury Villa with Garden', 'For_Sale', 8500000, 'Hyderabad', 2, 'Sold'),
+(2, 'Modern Studio Apartment', 'For_Rent', 25000, 'Chennai', 1, 'Rented');
+
 
 -- ========================
 -- Appointments Table
@@ -56,9 +57,9 @@ CREATE TABLE Appointments (
 );
 
 INSERT INTO Appointments (property_id, user_id, agent_id, datetime, status) VALUES
-(1, 3, 2, '2025-09-20 10:00:00', 'Pending'),
-(2, 3, 2, '2025-09-21 15:30:00', 'Confirmed');
-
+(1, 3, 2, '2025-11-20 10:00:00', 'Pending'),
+(1, 3, 2, '2025-11-22 15:30:00', 'Confirmed'),
+(1, 3, 2, '2025-11-15 12:00:00', 'Completed');
 
 
 -- ========================
@@ -75,8 +76,8 @@ CREATE TABLE Buys (
 );
 
 INSERT INTO Buys (buyer_id, property_id, date, amount) VALUES
-(3, 1, '2025-09-25', 4500000),
-(3, 2, '2025-09-28', 75000);
+(3, 2, '2025-11-05', 8500000);
+
 
 -- ========================
 -- Rents Table
@@ -93,8 +94,7 @@ CREATE TABLE Rents (
 );
 
 INSERT INTO Rents (tenant_id, property_id, rent_amount, start_date, end_date) VALUES
-(3, 2, 75000, '2025-09-01', '2026-08-31'),
-(3, 1, 50000, '2025-10-01', '2026-09-30');
+(3, 3, 25000, '2025-12-01', '2026-11-30');
 
 -- ========================
 -- Reviews Table
@@ -112,8 +112,7 @@ CREATE TABLE Reviews (
 );
 
 INSERT INTO Reviews (user_id, property_id, agent_id, rating, comments) VALUES
-(3, 1, 2, 5, 'Excellent property, smooth process!'),
-(3, 2, 2, 4, 'Good villa, but a bit pricey.');
+(3, 2, 2, 5, 'Excellent property, worth the price!');
 
 
 -- ==============================================
@@ -156,15 +155,6 @@ DROP FOREIGN KEY Appointments_ibfk_3,
 ADD CONSTRAINT fk_app_property FOREIGN KEY (property_id) REFERENCES Properties(property_id) ON DELETE CASCADE,
 ADD CONSTRAINT fk_app_user FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
 ADD CONSTRAINT fk_app_agent FOREIGN KEY (agent_id) REFERENCES Users(user_id) ON DELETE CASCADE;
-
--- ========================
--- OWNS TABLE
--- ========================
-ALTER TABLE Owns
-DROP FOREIGN KEY Owns_ibfk_1,
-DROP FOREIGN KEY Owns_ibfk_2,
-ADD CONSTRAINT fk_owns_user FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-ADD CONSTRAINT fk_owns_property FOREIGN KEY (property_id) REFERENCES Properties(property_id) ON DELETE CASCADE;
 
 -- ========================
 -- BUYS TABLE
